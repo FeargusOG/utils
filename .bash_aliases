@@ -1,6 +1,3 @@
-# Long format list
-alias ll="ls -la"
-
 # External IP
 alias ipe='curl ipinfo.io/ip'
 
