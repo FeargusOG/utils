@@ -8,6 +8,7 @@ function main () {
   apt_install
   git_setup $user $lastpass_email
   clone_utils $user
+  set_bash_aliases $user
 }
 
 function snap_install() {
@@ -59,6 +60,12 @@ function clone_utils () {
     sudo -u $1 mkdir -p /home/$1/workspace
     cd /home/$1/workspace
     sudo -u $1 git clone git@github.com:FeargusOG/utils.git
+  fi
+}
+
+function set_bash_aliases () {
+  if [[ ! -L "/home/$1/.bash_aliases" ]]; then
+    sudo -u $1 ln -s /home/$1/workspace/utils/.bash_aliases /home/$1/.bash_aliases
   fi
 }
 
