@@ -6,4 +6,4 @@
 
 ## Configuration
 
-- Installed the lastpass extension to FireFox.
+- Install the [LastPass addon for FireFox](https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/).
