@@ -46,6 +46,9 @@ function apt_install() {
   npm install -g tldr
   # Virtualbox
   apt-get install -y virtualbox
+  apt-get install -y virtualbox-guest-additions-iso
+  # Bat
+  apt-get install bat
 
   # Upgrades
   apt-get upgrade -y

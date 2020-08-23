@@ -15,3 +15,6 @@ alias gst='git status'
 
 # Untar a tar
 alias untar='tar -zxvf '
+
+# batcat to bat
+alias bat='batcat'
