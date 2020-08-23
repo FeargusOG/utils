@@ -4,11 +4,19 @@ user=$1
 lastpass_email=$2
 
 function main () {
-  snap_install
-  apt_install
-  git_setup $user $lastpass_email
-  clone_utils $user
-  set_bash_aliases $user
+  if [ -z $user ]; then
+    echo "Please provide the '\$USER' as the first arg!"
+  elif [ -z $lastpass_email ]; then
+    echo "Please provide the email address to use for LastPass as the second arg!"
+  else
+    echo "Starting Laptop Setup..."
+    snap_install
+    apt_install
+    git_setup $user $lastpass_email
+    clone_utils $user
+    set_bash_aliases $user
+  fi
+
 }
 
 function snap_install() {
@@ -20,19 +28,28 @@ function snap_install() {
   snap install atom --classic
   # Jq
   snap install jq
+
+  # Upgrades
+  snap refresh
 }
 
 function apt_install() {
   apt-get update -y
-  apt-get upgrade -y
-  apt-get dist-upgrade
+
   # Git
   apt-get install -y git
   # LastPass cli
   apt-get install -y lastpass-cli
   # TLDR
   apt-get install -y nodejs npm
+  npm install -g npm
   npm install -g tldr
+  # Virtualbox
+  apt-get install -y virtualbox
+
+  # Upgrades
+  apt-get upgrade -y
+  apt-get dist-upgrade
 }
 
 function git_setup () {
