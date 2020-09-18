@@ -6,8 +6,10 @@ lastpass_email=$2
 function main () {
   if [ -z $user ]; then
     echo "Please provide the '\$USER' as the first arg!"
+    echo "e.g. sudo ./laptop_setup.sh \$USER feargusogorman@gmail.com"
   elif [ -z $lastpass_email ]; then
     echo "Please provide the email address to use for LastPass as the second arg!"
+    echo "e.g. sudo ./laptop_setup.sh \$USER feargusogorman@gmail.com"
   else
     echo "Starting Laptop Setup..."
     snap_install
@@ -24,8 +26,6 @@ function snap_install() {
   snap install code --classic
   # Spotify
   snap install spotify
-  # Atom
-  snap install atom --classic
   # Jq
   snap install jq
 
@@ -38,6 +38,13 @@ function apt_install() {
 
   # Git
   apt-get install -y git
+  # Atom
+  # TODO - Use https://stackoverflow.com/a/1298103 to determine if package is installed before trying.
+  # Especially with repeating all of this junk.
+  wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add
+  sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+  apt-get update
+  apt-get install -y atom
   # LastPass cli
   apt-get install -y lastpass-cli
   # TLDR
@@ -46,7 +53,7 @@ function apt_install() {
   npm install -g tldr
   # Virtualbox
   apt-get install -y virtualbox
-  apt-get install -y virtualbox-guest-additions-iso
+  apt-get install -y virtualbox-guest-additions-iso #/usr/share/virtualbox/VBoxGuestAdditions.iso
   # Bat
   apt-get install bat
 

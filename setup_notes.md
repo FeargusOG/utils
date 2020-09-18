@@ -3,6 +3,7 @@
 ## Application Installations
 
 - Run the `laptop_setup.sh` script.
+- TODO: Beyond Compare
 
 ## Configuration
 
