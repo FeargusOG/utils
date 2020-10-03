@@ -30,6 +30,8 @@ function snap_install() {
   snap install jq
   # Heroku
   snap install heroku --classic
+  # Postman
+  snap install postman
 
   # Upgrades
   snap refresh
