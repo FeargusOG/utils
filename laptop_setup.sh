@@ -28,6 +28,8 @@ function snap_install() {
   snap install spotify
   # Jq
   snap install jq
+  # Heroku
+  snap install heroku --classic
 
   # Upgrades
   snap refresh
