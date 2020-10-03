@@ -56,6 +56,8 @@ function apt_install() {
   apt-get install -y virtualbox-guest-additions-iso #/usr/share/virtualbox/VBoxGuestAdditions.iso
   # Bat
   apt-get install bat
+  # Go
+  apt-get install golang
 
   # Upgrades
   apt-get upgrade -y
