@@ -68,6 +68,7 @@ function apt_install() {
   if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
     apt-get install -y git
   fi
+
   # Atom
   if [ $(dpkg-query -W -f='${Status}' atom 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
     wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add
@@ -115,6 +116,14 @@ function apt_install() {
   # Go
   if [ $(dpkg-query -W -f='${Status}' golang 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
     apt-get install -y golang
+  fi
+
+  # Chrome google-chrome-stable
+  if [ $(dpkg-query -W -f='${Status}' google-chrome-stable 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    TEMP_DEB="$(mktemp)" &&
+    wget -O "$TEMP_DEB" 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb' &&
+    sudo dpkg -i "$TEMP_DEB"
+    rm -f "$TEMP_DEB"
   fi
 
   # Upgrade and cleanup
