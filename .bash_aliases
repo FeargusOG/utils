@@ -18,3 +18,6 @@ alias untar='tar -zxvf '
 
 # batcat to bat
 alias bat='batcat'
+
+# Autojump
+alias j='autojump'

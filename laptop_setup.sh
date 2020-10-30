@@ -28,6 +28,8 @@ function snap_install() {
   snap install spotify
   # Jq
   snap install jq
+  # Heroku CLI
+  snap install --classic heroku
 
   # Upgrades
   snap refresh
@@ -55,7 +57,14 @@ function apt_install() {
   apt-get install -y virtualbox
   apt-get install -y virtualbox-guest-additions-iso #/usr/share/virtualbox/VBoxGuestAdditions.iso
   # Bat
-  apt-get install bat
+  apt-get install -y bat
+  # Curl
+  apt-get install -y curl
+  # Autojump
+  apt-get install -y autojump
+  ## THIS IS NOT WORKING....
+  echo "/usr/share/autojump/autojump.bash" >> ~/.bashrc
+  chmod 755 /usr/share/autojump/autojump.bash
 
   # Upgrades
   apt-get upgrade -y
