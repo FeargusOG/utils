@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Run this script remotely with:
+#   wget -q -O- https://raw.githubusercontent.com/FeargusOG/utils/master/laptop_setup.sh | sudo -E bash
+
 bail=false
 function main () {
   if [ -z $SETUP_USER ]; then
