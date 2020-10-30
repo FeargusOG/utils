@@ -28,8 +28,10 @@ function snap_install() {
   snap install spotify
   # Jq
   snap install jq
-  # Heroku CLI
-  snap install --classic heroku
+  # Heroku
+  snap install heroku --classic
+  # Postman
+  snap install postman
 
   # Upgrades
   snap refresh
@@ -65,7 +67,9 @@ function apt_install() {
   ## THIS IS NOT WORKING....
   echo "/usr/share/autojump/autojump.bash" >> ~/.bashrc
   chmod 755 /usr/share/autojump/autojump.bash
-
+  # Go
+  apt-get install golang
+  
   # Upgrades
   apt-get upgrade -y
   apt-get dist-upgrade
