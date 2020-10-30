@@ -102,14 +102,6 @@ function apt_install() {
     apt-get install -y curl
   fi
 
-  # Autojump
-  if [ $(dpkg-query -W -f='${Status}' autojump 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-    apt-get install -y autojump
-    ## THIS IS NOT WORKING....
-    echo "/usr/share/autojump/autojump.bash" >> ~/.bashrc
-    chmod 755 /usr/share/autojump/autojump.bash
-  fi
-
   # Go
   if [ $(dpkg-query -W -f='${Status}' golang 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
     apt-get install -y golang
