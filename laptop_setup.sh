@@ -5,10 +5,6 @@
 
 bail=false
 function main () {
-  if [ -z $SETUP_USER ]; then
-    echo "The '\$SETUP_USER' env var must be set!"
-    bail=true
-  fi
 
   if [ -z $SETUP_EMAIL ]; then
     echo "The '\$SETUP_EMAIL' env var must be set with your LastPass email account!"
@@ -19,9 +15,10 @@ function main () {
       echo "Starting Laptop Setup..."
       snap_install
       apt_install
-      git_setup $SETUP_USER $SETUP_EMAIL
-      clone_utils $SETUP_USER
-      set_bash_aliases $SETUP_USER
+      git_setup $SETUP_EMAIL
+      clone_utils
+      set_bash_aliases
+      set_dash_favorites
   else
     echo "Did you forget to persist the env vars? 'sudo -E ./laptop_setup.sh'"
   fi
@@ -136,34 +133,38 @@ function git_setup () {
   git_username=$(git config user.name)
   if [ -z $git_username ]
   then
-    lpass login $2
+    lpass login $1
     echo "Configuring Git..."
     githubemail=$(lpass show 1282860809177592449 --username)
     echo "Using email $githubemail"
     githubuser=$(echo $githubemail | awk -F '@' '{print $1}')
     echo "Using username $githubuser"
     echo "Setting Git SSH Keys..."
-    lpass show 1282860809177592449 --notes | jq -r .id_rsa > /home/$1/.ssh/id_rsa
-    lpass show 1282860809177592449 --notes | jq -r .id_rsa_pub > /home/$1/.ssh/id_rsa.pub
-    sudo -u $1 git config --global user.name "$githubuser"
-    sudo -u $1 git config --global user.email "$githubemail"
-    sudo -u $1 git config --global color.ui true
-    sudo -u $1 git config --global core.editor atom
+    lpass show 1282860809177592449 --notes | jq -r .id_rsa > /home/$USERNAME/.ssh/id_rsa
+    lpass show 1282860809177592449 --notes | jq -r .id_rsa_pub > /home/$USERNAME/.ssh/id_rsa.pub
+    sudo -u $USERNAME git config --global user.name "$githubuser"
+    sudo -u $USERNAME git config --global user.email "$githubemail"
+    sudo -u $USERNAME git config --global color.ui true
+    sudo -u $USERNAME git config --global core.editor atom
   fi
 }
 
 function clone_utils () {
-  if [[ ! -d "/home/$1/workspace" ]]; then
-    sudo -u $1 mkdir -p /home/$1/workspace
-    cd /home/$1/workspace
-    sudo -u $1 git clone git@github.com:FeargusOG/utils.git
+  if [[ ! -d "/home/$USERNAME/workspace" ]]; then
+    sudo -u $USERNAME mkdir -p /home/$USERNAME/workspace
+    cd /home/$USERNAME/workspace
+    sudo -u $USERNAME git clone git@github.com:FeargusOG/utils.git
   fi
 }
 
 function set_bash_aliases () {
-  if [[ ! -L "/home/$1/.bash_aliases" ]]; then
-    sudo -u $1 ln -s /home/$1/workspace/utils/.bash_aliases /home/$1/.bash_aliases
+  if [[ ! -L "/home/$USERNAME/.bash_aliases" ]]; then
+    sudo -u $USERNAME ln -s /home/$USERNAME/workspace/utils/.bash_aliases /home/$USERNAME/.bash_aliases
   fi
+}
+
+function set_dash_favorites () {
+  sudo -E -u $USERNAME gsettings set org.gnome.shell favorite-apps "['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'google-chrome.desktop', 'code_code.desktop', 'spotify_spotify.desktop', 'atom.desktop', 'virtualbox.desktop']"
 }
 
 main
