@@ -1,78 +1,123 @@
 #!/bin/bash
 
-user=$1
-lastpass_email=$2
-
+bail=false
 function main () {
-  if [ -z $user ]; then
-    echo "Please provide the '\$USER' as the first arg!"
-    echo "e.g. sudo ./laptop_setup.sh \$USER feargusogorman@gmail.com"
-  elif [ -z $lastpass_email ]; then
-    echo "Please provide the email address to use for LastPass as the second arg!"
-    echo "e.g. sudo ./laptop_setup.sh \$USER feargusogorman@gmail.com"
-  else
-    echo "Starting Laptop Setup..."
-    snap_install
-    apt_install
-    git_setup $user $lastpass_email
-    clone_utils $user
-    set_bash_aliases $user
+  if [ -z $SETUP_USER ]; then
+    echo "The '\$SETUP_USER' env var must be set!"
+    bail=true
   fi
 
+  if [ -z $SETUP_EMAIL ]; then
+    echo "The '\$SETUP_EMAIL' env var must be set with your LastPass email account!"
+    bail=true
+  fi
+
+  if [ "$bail" = false ]; then
+      echo "Starting Laptop Setup..."
+      snap_install
+      apt_install
+      git_setup $SETUP_USER $SETUP_EMAIL
+      clone_utils $SETUP_USER
+      set_bash_aliases $SETUP_USER
+  else
+    echo "Did you forget to persist the env vars? 'sudo -E ./laptop_setup.sh'"
+  fi
 }
 
 function snap_install() {
+  # Get the list of packages already snap installed
+  snap_list=($(snap list | awk '{print $1}'))
+
   # VS Code
-  snap install code --classic
+  if [[ ! " ${snap_list[@]} " =~ "code" ]]; then
+    snap install code --classic
+  fi
+
   # Spotify
-  snap install spotify
+  if [[ ! " ${snap_list[@]} " =~ "spotify" ]]; then
+    snap install spotify
+  fi
+
   # Jq
-  snap install jq
+  if [[ ! " ${snap_list[@]} " =~ "jq" ]]; then
+    snap install jq
+  fi
+
   # Heroku
-  snap install heroku --classic
+  if [[ ! " ${snap_list[@]} " =~ "heroku" ]]; then
+    snap install heroku --classic
+  fi
+
   # Postman
-  snap install postman
+  if [[ ! " ${snap_list[@]} " =~ "postman" ]]; then
+    snap install postman
+  fi
 
   # Upgrades
   snap refresh
 }
 
 function apt_install() {
+  # Update apt
   apt-get update -y
 
   # Git
-  apt-get install -y git
+  if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    apt-get install -y git
+  fi
   # Atom
-  # TODO - Use https://stackoverflow.com/a/1298103 to determine if package is installed before trying.
-  # Especially with repeating all of this junk.
-  wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add
-  sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
-  apt-get update
-  apt-get install -y atom
+  if [ $(dpkg-query -W -f='${Status}' atom 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add
+    sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+    apt-get update
+    apt-get install -y atom
+  fi
+
   # LastPass cli
-  apt-get install -y lastpass-cli
+  if [ $(dpkg-query -W -f='${Status}' lastpass-cli 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    apt-get install -y lastpass-cli
+  fi
+
   # TLDR
-  apt-get install -y nodejs npm
-  npm install -g npm
-  npm install -g tldr
+  if [ $(dpkg-query -W -f='${Status}' nodejs 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    apt-get install -y nodejs npm
+    npm install -g npm
+    npm install -g tldr
+  fi
+
   # Virtualbox
-  apt-get install -y virtualbox
-  apt-get install -y virtualbox-guest-additions-iso #/usr/share/virtualbox/VBoxGuestAdditions.iso
+  if [ $(dpkg-query -W -f='${Status}' virtualbox 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    apt-get install -y virtualbox
+    apt-get install -y virtualbox-guest-additions-iso #/usr/share/virtualbox/VBoxGuestAdditions.iso
+  fi
+
   # Bat
-  apt-get install -y bat
+  if [ $(dpkg-query -W -f='${Status}' bat 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    apt-get install -y bat
+  fi
+
   # Curl
-  apt-get install -y curl
+  if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    apt-get install -y curl
+  fi
+
   # Autojump
-  apt-get install -y autojump
-  ## THIS IS NOT WORKING....
-  echo "/usr/share/autojump/autojump.bash" >> ~/.bashrc
-  chmod 755 /usr/share/autojump/autojump.bash
+  if [ $(dpkg-query -W -f='${Status}' autojump 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    apt-get install -y autojump
+    ## THIS IS NOT WORKING....
+    echo "/usr/share/autojump/autojump.bash" >> ~/.bashrc
+    chmod 755 /usr/share/autojump/autojump.bash
+  fi
+
   # Go
-  apt-get install golang
-  
-  # Upgrades
+  if [ $(dpkg-query -W -f='${Status}' golang 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    apt-get install -y golang
+  fi
+
+  # Upgrade and cleanup
   apt-get upgrade -y
-  apt-get dist-upgrade
+  apt-get dist-upgrade -y
+  apt autoremove -y
 }
 
 function git_setup () {
