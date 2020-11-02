@@ -3,6 +3,15 @@
 # Run this script remotely with:
 #   wget -q -O- https://raw.githubusercontent.com/FeargusOG/utils/master/laptop_setup.sh | sudo -E bash
 # THIS DOES NOT WORK! It won't wait for the lastpass password. Until this is fixed, just wget it and execute it locally.
+#
+# ToDo
+# Install
+#   - expressvpn
+#   - steam
+#   - zoom
+#
+# Config
+#   - Atom config file (turn off autocomplete etc.)
 
 bail=false
 function main () {
