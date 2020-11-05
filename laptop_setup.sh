@@ -12,6 +12,8 @@
 #
 # Config
 #   - Atom config file (turn off autocomplete etc.)
+#   - vscode config - autohide etc.
+#   - set wallpaper to cliff
 
 bail=false
 function main () {
