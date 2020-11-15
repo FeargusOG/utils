@@ -14,6 +14,7 @@
 #   - Atom config file (turn off autocomplete etc.)
 #   - vscode config - autohide etc.
 #   - set wallpaper to cliff
+#   - Add option to setup battery cronjob for laptops - just ask user
 
 bail=false
 function main () {
