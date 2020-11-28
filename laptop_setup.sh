@@ -9,6 +9,7 @@
 #   - expressvpn
 #   - steam
 #   - zoom
+#   - pdf-shuffler
 #
 # Config
 #   - Atom config file (turn off autocomplete etc.)
